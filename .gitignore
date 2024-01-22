@@ -1,0 +1,7 @@
+.git
+.env
+response*
+*input*.txt
+*input*.json
+*output*.txt
+*output*.json

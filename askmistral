@@ -1,0 +1,70 @@
+#!/bin/bash
+
+source .env
+apikey=$API_KEY
+
+init=1
+model="mistral-tiny"
+while true; do
+    if [ "$init" -eq 1 ]; then
+        init=0
+        if [ "$#" -eq 2 ]; then
+            model="$1"
+            result="$2"
+        elif [ "$#" -eq 3 ] && [ "$2" == "-f" ]; then
+            model="$1"
+            file="$3"
+            if [ -f "$file" ]; then
+                result=$(cat "$file")
+                echo "File content:"
+                echo "$result"
+                # Read the content of the file and escape special characters for JSON
+                result=$(jq -n --arg text "$result" '$text')
+            else
+                echo "Error: File not found or invalid option."
+                exit 1
+            fi
+        else
+            echo "Error: Invalid usage. Please use either './askmistal <model> \"string\"' or \
+                    './script.sh <model> -f file.txt'"
+            exit 1
+        fi
+        json_data=$(jq -n \
+            --arg model $model \
+            --argjson messages "[{\"role\":\"user\",\"content\":$result}]" \
+            '{model: $model, messages: $messages}'
+        )
+
+    else read -p "Enter input (-f for file, q to exit): " input
+        if [ "$input" = "q" ]; then
+            # output the conversation to a filen
+             timestamp=$(date +%s)
+             echo "$json_data" > "./conversations/$timestamp.json"
+             break
+        fi
+        if [ "$input" == "-f" ]; then
+            read -p "Enter filename: " file
+            input=$(cat "$file") 
+            echo "File content:"
+            echo "$input"
+        fi  
+        input=$(jq -n --arg text "$input" '$text')
+        json_data=$(echo "$json_data" | jq --argjson user_msg \
+                 "{ \"role\": \"user\", \"content\": $input }" \
+                 '.messages += [$user_msg]')
+    fi
+  
+  
+    response=$(curl --location "https://api.mistral.ai/v1/chat/completions" \
+                    --header 'Content-Type: application/json' \
+                    --header 'Accept: application/json' \
+                    --header "Authorization: Bearer ${apikey}" \
+                    --data "$json_data")
+
+    echo "$response" | jq -r '.choices[0].message.content'
+    assistant_msg=$(echo "$response" | jq '.choices[0].message') 
+  
+    json_data=$(echo "$json_data" | jq  --argjson assistant_msg "$assistant_msg" \
+              '.messages += [$assistant_msg]')
+done
+echo "Bye!"
