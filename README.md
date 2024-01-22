@@ -1,5 +1,5 @@
 # Askmistral
-Simple batch script to interact with mistral from the command line.
+Simple bash script to interact with mistral from the command line.
 
 ## Usage
 Clone this repo.
