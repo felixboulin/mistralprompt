@@ -7,7 +7,7 @@ Obtain an API key from https://mistral.ai/, create an .env file and set
 
 Add `MODEL=<model>` to the .env file. You can view available models from [mistral.ai](https://docs.mistral.ai/platform/endpoints/).
 
-Type -h for usage guide.
+Run `./askmistral -h` for usage guide.
 
 
 The model's answer will be displayed on the shell, you can then reply by typing
