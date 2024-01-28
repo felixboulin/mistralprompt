@@ -13,5 +13,4 @@ Run `./askmistral -h` for usage guide.
 The model's answer will be displayed on the shell, you can then reply by typing
 text directly or pointing to a file containing your answer.
 
-When you stop the program (with `q` when prompted), the conversation will be
-saved under `conversations/` and named <current_timestamp>.json
+The conversation will be saved under `conversations/` and named <current_timestamp>.json
