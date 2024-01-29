@@ -47,6 +47,8 @@ shift $((OPTIND - 1))
 
 if [ $load_type == "file" ]; then
     prompt=$(cat "$filepath")
+    echo "File content:"
+    echo "$prompt"
     prompt=$(jq -n --arg text "$prompt" '$text')
     json_data=$(jq -n \
         --arg model $model \
