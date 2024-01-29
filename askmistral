@@ -57,8 +57,8 @@ if [ $load_type == "file" ]; then
     )
 
 elif [ $load_type == "conversation" ]; then
-    prompt=$(cat "$conversationfile")
-    json_data=$(jq '.' "$conversationfile")
+    json_data=$(jq -c '.' "$conversationfile")
+
 else
     prompt="$1"
     json_data=$(jq -n \
