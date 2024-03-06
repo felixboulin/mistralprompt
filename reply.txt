@@ -1,8 +1,0 @@
-Ok that worked. Could i simplify the code by defining the logic inside the 
-project_research_area model? Here is what is inside now:
-```
-class ProjectResearchArea < ApplicationRecord
-  belongs_to :project
-  belongs_to :research_area
-end
-```
